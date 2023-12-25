@@ -1,0 +1,33 @@
+<?php
+
+try {
+    require_once __DIR__ . '/system/bootstrap/Index.php';
+
+    if (empty($argv[1])) {
+        throw new \Exception('Peppux command can`t be empty');
+    }
+
+    $command = array_shift($argv);
+    $command = array_shift($argv);
+
+    $explode = explode(':', $command);
+
+    $command = $explode[0];
+    $method = isset($explode[1]) ? $explode[1] : 'run';
+
+    $classname = ucfirst($command);
+    $classname = "\System\Commands\\{$classname}";
+
+    $class = new $classname();
+
+    $params = [];
+
+    foreach ($argv as $arg) {
+        $get = explode('=', $arg);
+        if (count($get) === 2) $params[$get[0]] = $get[1];
+    }
+
+    $class->{$method}($params);
+} catch (\Throwable $th) {
+   throw $th;
+}

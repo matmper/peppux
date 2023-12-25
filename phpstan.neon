@@ -1,0 +1,11 @@
+parameters:
+
+    paths:
+        - ./app/
+        - ./system/
+        - ./public/
+
+    excludePaths:
+        - ./vendor/
+
+    level: 1
