@@ -1,0 +1,48 @@
+name: "Action Check"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  peppux-tests:
+    runs-on: ubuntu-latest
+
+    #environment: testing
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - name: Cache composer dependencies
+      uses: actions/cache@v2
+      with:
+        path: vendor
+        key: composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          composer-
+
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.3
+
+    - name: Install composer dependencies
+      run: |
+        composer install --no-progress --no-interaction
+
+    - name: Prepare application
+      run: |
+        cp .env.example .env
+
+    - name: Run PHPStan suit
+      run: composer phpstan
+
+    - name: Run PHP Code Sniffer suit
+      run: composer phpcs
+
+    - name: Run PHP Unit Tests suite
+      run: composer tests

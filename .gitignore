@@ -1,0 +1,13 @@
+#application
+/vendor/
+
+# Env
+.env
+.env.*
+!.env.example
+
+/storage/**/*.php
+
+# Cache
+.phpcs-cache
+.phpunit.cache
