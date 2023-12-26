@@ -1,0 +1,5 @@
+site_name: "Peppux Framework"
+site_url: https://matmper.github.io/peppux
+nav:
+  - Home: index.md
+theme: readthedocs
