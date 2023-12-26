@@ -2,8 +2,9 @@ parameters:
 
     paths:
         - ./app/
-        - ./system/
+        - ./database/
         - ./public/
+        - ./system/
 
     excludePaths:
         - ./vendor/
