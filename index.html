@@ -42,7 +42,23 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href=".">Home</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#requeriments-for-development">Requeriments for development</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#installation-for-development">Installation for development</a>
+    </li>
     </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="commands/">Commands</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="query/">Database Query</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="migration/">Database Migration</a>
                 </li>
               </ul>
       </div>
@@ -70,11 +86,31 @@
               
                 <h1 id="peppux-framework">Peppux Framework</h1>
 <p>Github: <a href="https://github.com/matmper/peppux">matmper/peppux</a></p>
-<h1 id="soon">Soon...</h1>
-<p>We are working on this documentation.</p>
+<p>Peppux is a web framework developed in PHP for personal studies.</p>
+<h2 id="requeriments-for-development">Requeriments for development</h2>
+<ul>
+<li>Docker</li>
+<li>Docker Compose</li>
+<li>GNU make</li>
+<li>PHP ^8.3 (Optional, you can use it within Docker)</li>
+</ul>
+<h2 id="installation-for-development">Installation for development</h2>
+<p>Clone repository, copy env and configure it:</p>
+<pre><code class="language-bash">$ cp .env.example .env
+</code></pre>
+<p>Start docker and run these commands:</p>
+<pre><code class="language-bash">$ make build
+$ make up
+</code></pre>
+<p>Use <code>$ make up</code> to start or <code>$ make down</code> to stop.</p>
+<p>The API will be available at <code>http://localhost:80</code> by default.
+To change the port set the variable <code>DOCKER_CONTAINER_PORT</code> in your <code>.env</code> file.</p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="commands/" class="btn btn-neutral float-right" title="Commands">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -97,6 +133,8 @@
     
     
     
+      <span><a href="commands/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
   </span>
 </div>
     <script src="js/jquery-3.6.0.min.js"></script>
@@ -115,5 +153,5 @@
 
 <!--
 MkDocs version : 1.5.3
-Build Date UTC : 2023-12-27 00:08:09.119308+00:00
+Build Date UTC : 2023-12-27 02:29:40.059145+00:00
 -->

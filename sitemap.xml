@@ -5,4 +5,19 @@
          <lastmod>2023-12-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
+    <url>
+         <loc>https://matmper.github.io/peppux/commands/</loc>
+         <lastmod>2023-12-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://matmper.github.io/peppux/migration/</loc>
+         <lastmod>2023-12-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://matmper.github.io/peppux/query/</loc>
+         <lastmod>2023-12-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
 </urlset>
