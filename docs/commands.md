@@ -29,7 +29,7 @@ $ make tty
 $ make composer-install
 
 # Update
-$ make composer update
+$ make composer-update
 ```
 
 ### Code Check and Lint
