@@ -20,6 +20,9 @@ jobs:
       - name: Upgrade pip
         run: python3 -m pip install --upgrade pip
 
+      - name: Install dependencies
+        run: python3 -m pip install mkdocs-material
+
       - name: Build
         run: mkdocs build
 
