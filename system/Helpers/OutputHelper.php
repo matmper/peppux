@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Helpers\Support;
+namespace System\Helpers;
 
 class OutputHelper
 {

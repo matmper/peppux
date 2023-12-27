@@ -56,9 +56,9 @@ class Migrate implements CommandInterface
 
             file_put_contents("{$path}/{$name}", $content);
 
-            \System\Helpers\Support\OutputHelper::success("Migration file created successfully: {$name}");
+            \System\Helpers\OutputHelper::success("Migration file created successfully: {$name}");
         } catch (\Throwable $th) {
-            \System\Helpers\Support\OutputHelper::error($th->getMessage());
+            \System\Helpers\OutputHelper::error($th->getMessage());
         }
     }
 }
