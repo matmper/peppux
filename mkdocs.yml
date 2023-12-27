@@ -2,4 +2,7 @@ site_name: "Peppux Framework"
 site_url: https://matmper.github.io/peppux
 nav:
   - Home: index.md
+  - Commands: commands.md
+  - Database Query: query.md
+  - Database Migration: migration.md
 theme: readthedocs

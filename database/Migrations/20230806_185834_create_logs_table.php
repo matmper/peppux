@@ -7,7 +7,7 @@ use System\Libraries\Migration;
 return new class extends Migration
 {
     /**
-     * Up migration
+     * Up migrations
      *
      * @return void
      */

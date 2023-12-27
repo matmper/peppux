@@ -40,9 +40,3 @@ composer-phpcs:
 
 composer-phpcbf:
 	docker exec -it ${CONTAINER} composer phpcbf
-
-migrate:
-	docker exec -it ${CONTAINER} php peppux migrate
-
-migrate-rollback:
-	docker exec -it ${CONTAINER} php peppux migrate:rollback steps=1
