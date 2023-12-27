@@ -38,7 +38,7 @@ class Migration implements MigrationInterface
             $up = array_diff($files, $migrations);
 
             if (empty($up)) {
-                $this->output("Migrate Up: Already up to date");
+                \System\Helpers\Support\OutputHelper::success("Migrate Up: Already up to date");
             } else {
                 foreach ($up as $file) {
                     $instance = require_once database_path("Migrations/$file");
@@ -49,7 +49,7 @@ class Migration implements MigrationInterface
                         [$file, now()->format('Y-m-d H:i:s')]
                     );
 
-                    $this->output("Migrate Up: {$file}");
+                    \System\Helpers\Support\OutputHelper::success("Migrate Up: {$file}");
                 }
             }
 
@@ -75,7 +75,7 @@ class Migration implements MigrationInterface
             $down = $this->getMigrations($steps);
 
             if (empty($down)) {
-                $this->output("Migrate Down: nothing to rollback");
+                \System\Helpers\Support\OutputHelper::success("Migrate Down: nothing to rollback");
             } else {
                 foreach ($down as $file) {
                     $instance = require_once database_path("Migrations/$file");
@@ -83,7 +83,7 @@ class Migration implements MigrationInterface
 
                     $this->connection->statement("DELETE FROM `{$this->table}` WHERE `name` = ?", [$file]);
 
-                    $this->output("Migrate Down: {$file}");
+                    \System\Helpers\Support\OutputHelper::success("Migrate Down: {$file}");
                 }
             }
 
@@ -152,16 +152,5 @@ class Migration implements MigrationInterface
             PRIMARY KEY `pk_id` (`id`),
             UNIQUE KEY `uq_name` (`name`)
         )");
-    }
-
-    /**
-     * Output console message
-     *
-     * @param string $message
-     * @return void
-     */
-    private function output(string $message): void
-    {
-        print "\033[0;32m" . now()->format('H:i:s') . "\033[0m - {$message}\n";
     }
 }
