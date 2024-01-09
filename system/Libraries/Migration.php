@@ -38,7 +38,7 @@ class Migration implements MigrationInterface
             $up = array_diff($files, $migrations);
 
             if (empty($up)) {
-                \System\Helpers\Support\OutputHelper::success("Migrate Up: Already up to date");
+                \System\Helpers\OutputHelper::success("Migrate Up: Already up to date");
             } else {
                 foreach ($up as $file) {
                     $instance = require_once database_path("Migrations/$file");
@@ -49,7 +49,7 @@ class Migration implements MigrationInterface
                         [$file, now()->format('Y-m-d H:i:s')]
                     );
 
-                    \System\Helpers\Support\OutputHelper::success("Migrate Up: {$file}");
+                    \System\Helpers\OutputHelper::success("Migrate Up: {$file}");
                 }
             }
 
@@ -75,7 +75,7 @@ class Migration implements MigrationInterface
             $down = $this->getMigrations($steps);
 
             if (empty($down)) {
-                \System\Helpers\Support\OutputHelper::success("Migrate Down: nothing to rollback");
+                \System\Helpers\OutputHelper::success("Migrate Down: nothing to rollback");
             } else {
                 foreach ($down as $file) {
                     $instance = require_once database_path("Migrations/$file");
@@ -83,7 +83,7 @@ class Migration implements MigrationInterface
 
                     $this->connection->statement("DELETE FROM `{$this->table}` WHERE `name` = ?", [$file]);
 
-                    \System\Helpers\Support\OutputHelper::success("Migrate Down: {$file}");
+                    \System\Helpers\OutputHelper::success("Migrate Down: {$file}");
                 }
             }
 

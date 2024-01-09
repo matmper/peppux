@@ -26,12 +26,12 @@ require_once FCPATH . 'vendor/autoload.php';
 | Load System Helpers
 |--------------------------------------------------------------------------
 */
-require_once SYSTEMPATH . 'helpers/DateHelper.php';
-require_once SYSTEMPATH . 'helpers/EnvHelper.php';
-require_once SYSTEMPATH . 'helpers/RequestHelper.php';
-require_once SYSTEMPATH . 'helpers/ResponseHelper.php';
-require_once SYSTEMPATH . 'helpers/UrlHelper.php';
-require_once SYSTEMPATH . 'helpers/PathHelper.php';
+require_once SYSTEMPATH . 'helpers/Autoload/DateHelper.php';
+require_once SYSTEMPATH . 'helpers/Autoload/EnvHelper.php';
+require_once SYSTEMPATH . 'helpers/Autoload/RequestHelper.php';
+require_once SYSTEMPATH . 'helpers/Autoload/ResponseHelper.php';
+require_once SYSTEMPATH . 'helpers/Autoload/UrlHelper.php';
+require_once SYSTEMPATH . 'helpers/Autoload/PathHelper.php';
 
 /*
 |--------------------------------------------------------------------------
