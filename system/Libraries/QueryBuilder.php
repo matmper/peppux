@@ -2,6 +2,8 @@
 
 namespace System\Libraries;
 
+use System\Enums\QueryCondition;
+
 class QueryBuilder
 {
     /**
@@ -106,7 +108,7 @@ class QueryBuilder
     }
 
     /**
-     * Set a new "and" where condition to query
+     * Push new where condition: and where
      *
      * @param string $column
      * @param string $condition
@@ -115,19 +117,73 @@ class QueryBuilder
      */
     public function where(string $column, string $condition, string|int|float $where): self
     {
-        $condition = strtoupper($condition);
+        $this->pushWhere($column, $condition, $where, 'AND');
+        return $this;
+    }
 
-        if (!in_array($condition, ['=', '>', '<', '>=', '<=', '!=', '<>', 'LIKE'])) {
-            throw new \Exception("Query Exception: Where condition is invalid: $condition");
-        }
+    /**
+     * Push new where condition: or where
+     *
+     * @param string $column
+     * @param string $condition
+     * @param string|integer|float $where
+     * @return self
+     */
+    public function orWhere(string $column, string $condition, string|int|float $where): self
+    {
+        $this->pushWhere($column, $condition, $where, 'OR');
+        return $this;
+    }
 
-        $this->builder['where'][] = [
-            'column' => $column,
-            'condition' => $condition,
-            'where' => $where,
-            'type' => 'and'
-        ];
+    /**
+     * Push new where condition: and where in
+     *
+     * @param string $column
+     * @param array $where
+     * @return self
+     */
+    public function whereIn(string $column, array $where): self
+    {
+        $this->pushWhere($column, QueryCondition::IN, $this->implodeWhere($where), 'AND');
+        return $this;
+    }
 
+    /**
+     * Push new where condition: or where in
+     *
+     * @param string $column
+     * @param array $where
+     * @return self
+     */
+    public function orWhereIn(string $column, array $where): self
+    {
+        $this->pushWhere($column, QueryCondition::IN, $this->implodeWhere($where), 'OR');
+        return $this;
+    }
+
+    /**
+     * Push new where condition: and where not in
+     *
+     * @param string $column
+     * @param array $where
+     * @return self
+     */
+    public function whereNotIn(string $column, array $where): self
+    {
+        $this->pushWhere($column, QueryCondition::NOT_IN, $this->implodeWhere($where), 'AND');
+        return $this;
+    }
+
+    /**
+     * Push new where condition: or where not in
+     *
+     * @param string $column
+     * @param array $where
+     * @return self
+     */
+    public function orWhereNotIn(string $column, array $where): self
+    {
+        $this->pushWhere($column, QueryCondition::NOT_IN, $this->implodeWhere($where), 'OR');
         return $this;
     }
 
@@ -138,11 +194,11 @@ class QueryBuilder
      * @param integer|null $offset
      * @return self
      */
-    public function limit(int $limit, ?int $offset = null): self
+    public function limit(int $limit, int $offset = null): self
     {
         $this->builder['limit'] = $limit;
 
-        if ($offset) {
+        if (is_int($offset)) {
             $this->builder['offset'] = $offset;
         }
 
@@ -173,17 +229,51 @@ class QueryBuilder
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**
+     * Push new item to where array
+     *
+     * @param string $column
+     * @param string $condition
+     * @param string|integer|float $where
+     * @param string $type
+     * @return void
+     */
+    private function pushWhere(string $column, string $condition, string|int|float $where, string $type): void
+    {
+        $this->builder['where'][] = [
+            'column' => $column,
+            'condition' => $condition,
+            'where' => $where,
+            'type' => $type,
+        ];
+    }
+
+    /**
+     * Implode array to where in condition, eg: [1,2] -> ('1','2')
+     *
+     * @param array $where
+     * @return string
+     */
+    private function implodeWhere(array $where): string
+    {
+        return "('" . implode("','", $where) . "')";
+    }
+
+    /**
      * Create query sequence
      *
      * @return self
      */
     private function build(): void
     {
-        $this->buildColumns();
-        $this->buildTable();
-        $this->buildWhere();
-        $this->buildOrder();
-        $this->buildLimit();
+        try {
+            $this->buildColumns();
+            $this->buildTable();
+            $this->buildWhere();
+            $this->buildOrder();
+            $this->buildLimit();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -257,16 +347,28 @@ class QueryBuilder
             return;
         }
 
+        $conditionsArray = QueryCondition::toArray();
+
         $this->concat("WHERE");
 
         foreach ($this->builder['where'] as $key => $where) {
-            if ($key) {
-                $this->concat(strtoupper($where['type']));
+            $condition = strtoupper($where['condition']);
+            $type = strtoupper($where['type']);
+
+            if (!in_array($condition, $conditionsArray)) {
+                throw new \Exception("Where type is invalid: " . json_encode($where));
             }
 
-            $this->concat("`{$where['column']}` {$where['condition']} ?");
+            if ($key) {
+                $this->concat($type);
+            }
 
-            $this->builder['bind'][] = $where['where'];
+            if (in_array($condition, [QueryCondition::IN, QueryCondition::NOT_IN])) {
+                $this->concat("`{$where['column']}` {$condition} {$where['where']}");
+            } else {
+                $this->concat("`{$where['column']}` {$condition} ?");
+                $this->builder['bind'][] = $where['where'];
+            }
         }
     }
 
@@ -284,7 +386,11 @@ class QueryBuilder
         $orders = [];
 
         foreach ($this->builder['order'] as $order) {
-            $orders[] = "`{$order['column']}` " . strtoupper($order['type']);
+            if (!in_array($order['type'], ['ASC', 'DESC'])) {
+                throw new \Exception("Order type is invalid: " . json_encode($order));
+            }
+
+            $orders[] = "`{$order['column']}` {$order['type']}";
         }
 
         $this->concat('ORDER BY ' . implode(', ', $orders));

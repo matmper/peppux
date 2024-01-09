@@ -15,14 +15,9 @@ class ExampleController extends Controller
     public function index(): Response
     {
         $users = new User;
+        $users = $users->get();
 
-        // echo '<pre>'; print_r($users->get()); echo '</pre>';
-        // echo '<pre>'; var_dump($users->where('id', '>=', 1)->get()); echo '</pre>';
-        // echo '<pre>'; print_r($users->raw('select * from users where id > ?', [1])); echo '</pre>';
-        // echo '<pre>'; print_r($users->where('id', '=', 44)->first()); echo '</pre>';
-        // echo '<pre>'; print_r($users->find(2)); echo '</pre>';
-
-        return response()->json($users->get());
+        return response()->json($users);
     }
 
     /**
@@ -34,9 +29,10 @@ class ExampleController extends Controller
     public function show(int $id): Response
     {
         $user = new User;
+        $user = $user->find($id);
 
         if ($user) {
-            return response()->json($user->find($id));
+            return response()->json($user);
         }
 
         return response()->setCode(Response::HTTP_NOT_FOUND) ->json([
