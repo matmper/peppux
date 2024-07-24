@@ -2,7 +2,7 @@
 
 namespace System\Bootstrap\Support;
 
-class Errors
+final class Errors
 {
     public function __construct()
     {
@@ -10,6 +10,8 @@ class Errors
     }
 
     /**
+     * Invoke application error config
+     *
      * @return void
      */
     public function __invoke(): void

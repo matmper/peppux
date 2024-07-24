@@ -35,19 +35,10 @@ require_once SYSTEMPATH . 'helpers/Autoload/PathHelper.php';
 
 /*
 |--------------------------------------------------------------------------
-| Load System and Config Libraries
+| Load Config support libraries
 |--------------------------------------------------------------------------
 */
-$loader = new \System\Bootstrap\Support\Loader();
-$loader::env_file();
-$loader::config();
-
-/*
-|--------------------------------------------------------------------------
-| Load Error library
-|--------------------------------------------------------------------------
-*/
-new \System\Bootstrap\Support\Errors();
+new \System\Bootstrap\Support\Loader();
 
 /*
 |--------------------------------------------------------------------------
@@ -58,13 +49,17 @@ date_default_timezone_set(config('app.timezone', 'UTC'));
 
 /*
 |--------------------------------------------------------------------------
-| Classes Alias
+| Load Error support library
 |--------------------------------------------------------------------------
 */
-class_alias('System\Libraries\Request', 'Request');
-class_alias('System\Libraries\Session', 'Session');
-class_alias('System\Libraries\Database', 'Database');
-class_alias('System\Libraries\Response', 'Response');
+new \System\Bootstrap\Support\Errors();
+
+/*
+|--------------------------------------------------------------------------
+| Load Session support library
+|--------------------------------------------------------------------------
+*/
+new \System\Bootstrap\Support\Session();
 
 /*
 |--------------------------------------------------------------------------
@@ -72,10 +67,3 @@ class_alias('System\Libraries\Response', 'Response');
 |--------------------------------------------------------------------------
 */
 new \System\Bootstrap\Support\Routes();
-
-/*
-|--------------------------------------------------------------------------
-| Remove all session from flashdata
-|--------------------------------------------------------------------------
-*/
-\System\Libraries\Session::unsetFlashdata();

@@ -2,13 +2,24 @@
 
 namespace System\Bootstrap\Support;
 
-/*
-|--------------------------------------------------------------------------
-| Load and includes files
-|--------------------------------------------------------------------------
-*/
-class Loader
+final class Loader
 {
+    public function __construct()
+    {
+        $this->__invoke();
+    }
+
+    /**
+     * Invoke application configuration
+     *
+     * @return void
+     */
+    public function __invoke(): void
+    {
+        self::env();
+        self::config();
+    }
+
     /**
      * Load a controller and method
      *
@@ -52,7 +63,7 @@ class Loader
      * @param string $__filename
      * @return void
      */
-    public static function env_file(string $__filename = '.env'): void
+    private static function env(string $__filename = '.env'): void
     {
         if (!file_exists(FCPATH . $__filename)) {
             throw new \Exception("env file `$__filename` not found", 1);
@@ -69,7 +80,7 @@ class Loader
      *
      * @return void
      */
-    public static function config(): void
+    private static function config(): void
     {
         foreach (glob(APPPATH . 'config/*.php') as $file) {
             $__filename = pathinfo($file)['filename'];

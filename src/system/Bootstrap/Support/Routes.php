@@ -4,7 +4,7 @@ namespace System\Bootstrap\Support;
 
 use System\Libraries\Response;
 
-class Routes
+final class Routes
 {
     /**
      * @var string
@@ -31,7 +31,12 @@ class Routes
         $this->__invoke();
     }
 
-    public function __invoke()
+    /**
+     * Invoke application routes
+     *
+     * @return void
+     */
+    public function __invoke(): void
     {
         $this->__include();
 
@@ -45,7 +50,8 @@ class Routes
         self::routeCache();
 
         if (!isset($routes[$method])) {
-            return self::routeNotFound();
+            self::routeNotFound();
+            return;
         }
 
         if (isset($routes[$method][$requestUri])) {
@@ -63,11 +69,13 @@ class Routes
         }
 
         if (is_string($routes)) {
-            return self::routeMethodNotAllowed();
+            self::routeMethodNotAllowed();
+            return;
         }
 
         // Route not found (404)
-        return self::routeNotFound();
+        self::routeNotFound();
+        return;
     }
 
     /**
@@ -118,13 +126,13 @@ class Routes
     /**
      * Return 404 - Not found
      *
-     * @return Response
+     * @return void
      */
-    private static function routeNotFound(): Response
+    private static function routeNotFound(): void
     {
         $code = Response::HTTP_NOT_FOUND;
 
-        return response()->setCode($code)->json([
+        response()->setCode($code)->json([
             'errors' => ['error.not_found'],
             'metadata' => [
                 'message' => Response::getMessage($code),
@@ -136,13 +144,13 @@ class Routes
     /**
      * Return 405 - Method not allowed
      *
-     * @return Response
+     * @return void
      */
-    private static function routeMethodNotAllowed(): Response
+    private static function routeMethodNotAllowed(): void
     {
         $code = Response::HTTP_METHOD_NOT_ALLOWED;
 
-        return response()->setCode($code)->json([
+        response()->setCode($code)->json([
             'errors' => ['error.method_not_allowed'],
             'metadata' => [
                 'message' => Response::getMessage($code),

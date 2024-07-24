@@ -1,8 +1,9 @@
 <?php
 
-namespace System\Libraries;
+namespace System\Peppux;
 
 use System\Contracts\MigrationInterface;
+use System\Libraries\Database;
 
 class Migration implements MigrationInterface
 {

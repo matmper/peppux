@@ -5,30 +5,6 @@ namespace System\Libraries;
 class Session
 {
     /**
-     * Session expires (lifetime) in minutes
-     *
-     * @var int
-     */
-    private int $sessionExpires;
-
-    public function __construct()
-    {
-        $this->sessionExpires = config('session.lifetime', 120);
-    }
-
-    public function __invoke()
-    {
-        session_cache_expire($this->sessionExpires);
-        session_start(['cookie_lifetime' => $this->sessionExpires]);
-
-        if (!isset($_SESSION['__s'])) {
-            $_SESSION['__s'] = []; // persistent session
-            $_SESSION['__f'] = []; // flashdata session (once)
-            $_SESSION['__t'] = []; // tempdata session (time)
-        }
-    }
-
-    /**
      * Get value from session key
      *
      * @param string|integer $param
@@ -44,13 +20,11 @@ class Session
      *
      * @param string|integer $param
      * @param mixed $value
-     * @return mixed
+     * @return void
      */
-    public static function set(string|int $param, mixed $value): mixed
+    public static function set(string|int $param, mixed $value): void
     {
         $_SESSION['__s'][$param] = $value;
-
-        return self::get($param);
     }
 
     /**
@@ -64,30 +38,6 @@ class Session
         if (isset($_SESSION['__s'][$param])) {
             unset($_SESSION['__s'][$param]);
         }
-    }
-
-    /**
-     * Set value into session flashdata key (visible once time)
-     *
-     * @param string|integer $param
-     * @param mixed $value
-     * @return boolean
-     */
-    public static function setFlashdata(string|int $param, mixed $value): bool
-    {
-        $_SESSION['__f'][$param] = $value;
-
-        return isset($_SESSION['__f'][$param]);
-    }
-
-    /**
-     * Unset all values and keys from session flashdata
-     *
-     * @return void
-     */
-    public static function unsetFlashdata(): void
-    {
-        $_SESSION['__f'] = [];
     }
 
     /**

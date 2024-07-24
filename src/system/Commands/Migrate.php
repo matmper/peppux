@@ -3,15 +3,16 @@
 namespace System\Commands;
 
 use System\Contracts\CommandInterface;
+use System\Peppux\Migration;
 
-class Migrate implements CommandInterface
+class Migrate extends Migration implements CommandInterface
 {
     /**
      * @inheritDoc
      */
     public function run(array $args): void
     {
-        $run = new \System\Libraries\Migration;
+        $run = new \System\Peppux\Migration;
         $run->up();
     }
 
@@ -25,7 +26,7 @@ class Migrate implements CommandInterface
     {
         $steps = !empty($args['steps']) ? $args['steps'] : 1;
 
-        $run = new \System\Libraries\Migration;
+        $run = new \System\Peppux\Migration;
         $run->down($steps);
     }
 

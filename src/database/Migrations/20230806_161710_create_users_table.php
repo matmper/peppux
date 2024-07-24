@@ -2,7 +2,7 @@
 
 namespace Database\Migrations;
 
-use System\Libraries\Migration;
+use System\Peppux\Migration;
 
 return new class extends Migration
 {

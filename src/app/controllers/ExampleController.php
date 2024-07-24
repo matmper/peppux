@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\User;
 use System\Libraries\Response;
+use System\Libraries\Session;
 
 class ExampleController extends Controller
 {
