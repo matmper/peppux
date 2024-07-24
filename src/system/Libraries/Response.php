@@ -175,10 +175,10 @@ class Response extends Enum implements Arrayable
      * Define a new header to response
      *
      * @param string $header
-     * @param string $value
+     * @param string|int $value
      * @return $this
      */
-    public function setHeader(string $header, string $value): object
+    public function setHeader(string $header, string|int $value): object
     {
         header("$header: $value");
         return $this;
@@ -188,14 +188,16 @@ class Response extends Enum implements Arrayable
      * Return a valid json with header application/json
      *
      * @param array|object $data
-     * @return Response
+     * @return self
      */
-    public function json(array|object $data): Response
+    public function json(array|object $data): self
     {
         $response = (string) json_encode($data);
 
         $this->setHeader('Content-Type', 'application/json');
-        $this->setHeader('Content-Length', (string) strlen($response));
+        $this->setHeader('Content-Length', strlen($response));
+
+        print $response;
 
         return $this;
     }
