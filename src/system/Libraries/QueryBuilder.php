@@ -144,7 +144,7 @@ class QueryBuilder
      */
     public function whereIn(string $column, array $where): self
     {
-        $this->pushWhere($column, QueryCondition::IN, $this->implodeWhere($where), 'AND');
+        $this->pushWhere($column, QueryCondition::IN->value, $this->implodeWhere($where), 'AND');
         return $this;
     }
 
@@ -157,7 +157,7 @@ class QueryBuilder
      */
     public function orWhereIn(string $column, array $where): self
     {
-        $this->pushWhere($column, QueryCondition::IN, $this->implodeWhere($where), 'OR');
+        $this->pushWhere($column, QueryCondition::IN->value, $this->implodeWhere($where), 'OR');
         return $this;
     }
 
@@ -170,7 +170,7 @@ class QueryBuilder
      */
     public function whereNotIn(string $column, array $where): self
     {
-        $this->pushWhere($column, QueryCondition::NOT_IN, $this->implodeWhere($where), 'AND');
+        $this->pushWhere($column, QueryCondition::NOT_IN->value, $this->implodeWhere($where), 'AND');
         return $this;
     }
 
@@ -183,7 +183,7 @@ class QueryBuilder
      */
     public function orWhereNotIn(string $column, array $where): self
     {
-        $this->pushWhere($column, QueryCondition::NOT_IN, $this->implodeWhere($where), 'OR');
+        $this->pushWhere($column, QueryCondition::NOT_IN->value, $this->implodeWhere($where), 'OR');
         return $this;
     }
 
@@ -363,7 +363,7 @@ class QueryBuilder
                 $this->concat($type);
             }
 
-            if (in_array($condition, [QueryCondition::IN, QueryCondition::NOT_IN])) {
+            if (in_array($condition, [QueryCondition::IN->value, QueryCondition::NOT_IN->value])) {
                 $this->concat("`{$where['column']}` {$condition} {$where['where']}");
             } else {
                 $this->concat("`{$where['column']}` {$condition} ?");

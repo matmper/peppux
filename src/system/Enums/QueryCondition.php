@@ -2,19 +2,21 @@
 
 namespace System\Enums;
 
-use System\Peppux\Enum;
+use System\Peppux\Trait\ArrayableEnum;
 
-class QueryCondition extends Enum
+enum QueryCondition: string
 {
-    const EQUAL = '=';
-    const GREATER = '>';
-    const LESS = '<';
-    const GREATER_OR_EQUAL = '>=';
-    const LESS_OR_EQUAL = '<=';
-    const GREATER_OR_LESS = '<>';
-    const DIFFERENT = '!=';
-    const LIKE = 'LIKE';
-    const NOT_LIKE = 'NOT_LIKE';
-    const IN = 'IN';
-    const NOT_IN = 'NOT IN';
+    use ArrayableEnum;
+
+    case EQUAL = '=';
+    case GREATER = '>';
+    case LESS = '<';
+    case GREATER_OR_EQUAL = '>=';
+    case LESS_OR_EQUAL = '<=';
+    case GREATER_OR_LESS = '<>';
+    case DIFFERENT = '!=';
+    case LIKE = 'LIKE';
+    case NOT_LIKE = 'NOT_LIKE';
+    case IN = 'IN';
+    case NOT_IN = 'NOT IN';
 }

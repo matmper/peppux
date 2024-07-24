@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Bootstrap;
+namespace System\Bootstrap\Support;
 
 class Errors
 {
@@ -17,7 +17,7 @@ class Errors
         ini_set('display_errors', 0);
         error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
 
-        if (config('app.debug') == true) {
+        if (config('app.debug', false) === true) {
             error_reporting(-1);
             ini_set('display_errors', 1);
         }

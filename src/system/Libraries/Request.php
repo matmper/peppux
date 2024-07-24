@@ -2,10 +2,13 @@
 
 namespace System\Libraries;
 
-use System\Bootstrap\Support\Arrayable;
+use System\Contracts\ArrayableInterface;
+use System\Peppux\Trait\ArrayableConstant;
 
-class Request implements Arrayable
+class Request implements ArrayableInterface
 {
+    use ArrayableConstant;
+
     /**
      * $_GET
      *
@@ -85,26 +88,6 @@ class Request implements Arrayable
             default:
                 return null;
         }
-    }
-
-    /**
-     * Transform all request payload to and array
-     *
-     * @return array
-     */
-    public static function toArray(): array
-    {
-        return array_merge(self::$requestGet, self::$requestPost);
-    }
-
-    /**
-     * Get array keys and return into an array
-     *
-     * @return array
-     */
-    public static function toArrayKeys(): array
-    {
-        return array_keys(self::toArray());
     }
 
     /**

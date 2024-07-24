@@ -2,14 +2,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| Load and init base config
+| Load and init base config and turn web system on
 |--------------------------------------------------------------------------
 */
-require_once __DIR__ . '/../system/bootstrap/Index.php';
-
-/*
-|--------------------------------------------------------------------------
-| Turn web system on
-|--------------------------------------------------------------------------
-*/
-require_once __DIR__ . '/../system/bootstrap/Kernel.php';
+require_once __DIR__ . '/../system/Bootstrap/Index.php';

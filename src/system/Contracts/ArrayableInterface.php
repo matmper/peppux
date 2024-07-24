@@ -1,8 +1,8 @@
 <?php
 
-namespace System\Bootstrap\Support;
+namespace System\Contracts;
 
-interface Arrayable
+interface ArrayableInterface
 {
     /**
      * @return array

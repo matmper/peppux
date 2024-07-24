@@ -2,11 +2,13 @@
 
 namespace System\Libraries;
 
-use System\Bootstrap\Support\Arrayable;
-use System\Peppux\Enum;
+use System\Contracts\ArrayableInterface;
+use System\Peppux\Trait\ArrayableConstant;
 
-class Response extends Enum implements Arrayable
+class Response implements ArrayableInterface
 {
+    use ArrayableConstant;
+
     /**
      * Response Status Code
      *

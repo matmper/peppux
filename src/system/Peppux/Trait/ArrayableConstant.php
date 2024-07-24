@@ -1,11 +1,10 @@
 <?php
 
-namespace System\Peppux;
+namespace System\Peppux\Trait;
 
 use ReflectionClass;
-use System\Bootstrap\Support\Arrayable;
 
-class Enum implements Arrayable
+trait ArrayableConstant
 {
     /**
      * Return all const into an array

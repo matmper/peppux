@@ -38,9 +38,23 @@ require_once SYSTEMPATH . 'helpers/Autoload/PathHelper.php';
 | Load System and Config Libraries
 |--------------------------------------------------------------------------
 */
-$loader = new \System\Bootstrap\Loader;
+$loader = new \System\Bootstrap\Support\Loader();
 $loader::env_file();
 $loader::config();
+
+/*
+|--------------------------------------------------------------------------
+| Load Error library
+|--------------------------------------------------------------------------
+*/
+new \System\Bootstrap\Support\Errors();
+
+/*
+|--------------------------------------------------------------------------
+| Set default timezone
+|--------------------------------------------------------------------------
+*/
+date_default_timezone_set(config('app.timezone', 'UTC'));
 
 /*
 |--------------------------------------------------------------------------
@@ -54,7 +68,14 @@ class_alias('System\Libraries\Response', 'Response');
 
 /*
 |--------------------------------------------------------------------------
-| Set default timezone
+| Load essentials routes
 |--------------------------------------------------------------------------
 */
-date_default_timezone_set(config('app.timezone', 'UTC'));
+new \System\Bootstrap\Support\Routes();
+
+/*
+|--------------------------------------------------------------------------
+| Remove all session from flashdata
+|--------------------------------------------------------------------------
+*/
+\System\Libraries\Session::unsetFlashdata();
