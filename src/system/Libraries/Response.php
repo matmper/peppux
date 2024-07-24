@@ -3,7 +3,7 @@
 namespace System\Libraries;
 
 use System\Contracts\ArrayableInterface;
-use System\Peppux\Trait\ArrayableConstant;
+use Peppux\Trait\ArrayableConstant;
 
 class Response implements ArrayableInterface
 {

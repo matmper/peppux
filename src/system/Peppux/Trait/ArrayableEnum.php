@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Peppux\Trait;
+namespace Peppux\Trait;
 
 trait ArrayableEnum
 {

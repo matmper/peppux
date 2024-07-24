@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Peppux;
+namespace Peppux;
 
 use System\Contracts\MigrationInterface;
 use System\Libraries\Database;

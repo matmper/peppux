@@ -3,7 +3,7 @@
 namespace System\Commands;
 
 use System\Contracts\CommandInterface;
-use System\Peppux\Migration;
+use Peppux\Migration;
 
 class Migrate extends Migration implements CommandInterface
 {
@@ -12,7 +12,7 @@ class Migrate extends Migration implements CommandInterface
      */
     public function run(array $args): void
     {
-        $run = new \System\Peppux\Migration;
+        $run = new \Peppux\Migration;
         $run->up();
     }
 
@@ -26,7 +26,7 @@ class Migrate extends Migration implements CommandInterface
     {
         $steps = !empty($args['steps']) ? $args['steps'] : 1;
 
-        $run = new \System\Peppux\Migration;
+        $run = new \Peppux\Migration;
         $run->down($steps);
     }
 

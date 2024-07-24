@@ -2,8 +2,6 @@
 
 namespace System\Bootstrap\Support;
 
-use System\Libraries\Response;
-
 final class Routes
 {
     /**
@@ -35,6 +33,8 @@ final class Routes
      * Invoke application routes
      *
      * @return void
+     * @throws \Peppux\Exceptions\Http\MethodNotAllowedException
+     * @throws \Peppux\Exceptions\Http\PageNotFoundException
      */
     public function __invoke(): void
     {
@@ -49,9 +49,8 @@ final class Routes
 
         self::routeCache();
 
-        if (!isset($routes[$method])) {
-            self::routeNotFound();
-            return;
+        if (empty($routes[$method])) {
+            throw new \Peppux\Exceptions\Http\PageNotFoundException();
         }
 
         if (isset($routes[$method][$requestUri])) {
@@ -69,13 +68,10 @@ final class Routes
         }
 
         if (is_string($routes)) {
-            self::routeMethodNotAllowed();
-            return;
+            throw new \Peppux\Exceptions\Http\MethodNotAllowedException();
         }
 
-        // Route not found (404)
-        self::routeNotFound();
-        return;
+        throw new \Peppux\Exceptions\Http\PageNotFoundException();
     }
 
     /**
@@ -121,41 +117,5 @@ final class Routes
         } catch (\Throwable $th) {
             throw $th;
         }
-    }
-
-    /**
-     * Return 404 - Not found
-     *
-     * @return void
-     */
-    private static function routeNotFound(): void
-    {
-        $code = Response::HTTP_NOT_FOUND;
-
-        response()->setCode($code)->json([
-            'errors' => ['error.not_found'],
-            'metadata' => [
-                'message' => Response::getMessage($code),
-                'code' => $code,
-            ]
-        ]);
-    }
-
-    /**
-     * Return 405 - Method not allowed
-     *
-     * @return void
-     */
-    private static function routeMethodNotAllowed(): void
-    {
-        $code = Response::HTTP_METHOD_NOT_ALLOWED;
-
-        response()->setCode($code)->json([
-            'errors' => ['error.method_not_allowed'],
-            'metadata' => [
-                'message' => Response::getMessage($code),
-                'code' => $code,
-            ]
-        ]);
     }
 }

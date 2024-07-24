@@ -2,7 +2,7 @@
 
 namespace System\Enums;
 
-use System\Peppux\Trait\ArrayableEnum;
+use Peppux\Trait\ArrayableEnum;
 
 enum QueryCondition: string
 {
