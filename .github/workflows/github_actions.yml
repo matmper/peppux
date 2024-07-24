@@ -10,6 +10,10 @@ jobs:
   peppux-tests:
     runs-on: ubuntu-22.04
 
+    defaults:
+      run:
+        working-directory: src
+
     steps:
     - uses: actions/checkout@v2
       with:

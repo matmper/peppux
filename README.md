@@ -19,16 +19,15 @@
 Access: [Peppux - Complete Documentation](https://matmper.github.io/peppux)
 
 ## Requeriments
-- Docker
-- Docker Compose
+- Docker && Docker Compose
 - GNU make
-- PHP ^8.3 (Optional, you can use it within Docker)
 
 ## Installation for development
 
 Clone repository, copy env and configure it:
 ```bash
-$ cp .env.example .env
+$ cp ./src/.env.example ./src/env
+$ ln -s ./src/.env .env
 ```
 
 Start docker and run these commands:

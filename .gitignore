@@ -1,12 +1,12 @@
 #application
-/vendor/
+/src/vendor/
 
 # Env
 .env
 .env.*
 !.env.example
 
-/storage/**/*.php
+/src/storage/**/*.php
 
 # Cache
 .phpcs-cache

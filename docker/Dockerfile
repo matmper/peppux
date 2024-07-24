@@ -1,48 +1,93 @@
-FROM php:8.3.0beta3-fpm
+FROM ubuntu:20.04
 
-ENV COMPOSER_ALLOW_SUPERUSER=${COMPOSER_ALLOW_SUPERUSER:-0}
+ARG PHP_VERSION=8.3
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
+ENV TZ=UTC
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN rm -rf /var/www/*
+
+COPY ./src/ /var/www
+
+WORKDIR /var/www
+
+# Install dependencies
+RUN apt-get upgrade && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        software-properties-common \
+        lsb-release \
+        nginx \
         curl \
-        libonig-dev \
-        libxml2-dev \
-        libzip-dev \
-        libjpeg62-turbo-dev \
-        libfreetype6-dev \
-        unzip \
         vim \
-        && docker-php-ext-install pdo_mysql \
-        && docker-php-ext-install mysqli \
-        && docker-php-ext-install mbstring \
-        && docker-php-ext-install exif \
-        && docker-php-ext-install pcntl \
-        && docker-php-ext-install bcmath \
-        && docker-php-ext-install zip \
-        && docker-php-ext-configure gd --with-freetype --with-jpeg \
-        && docker-php-ext-install gd
-        #&& pecl install xdebug-3.1.1 \
-        #&& docker-php-ext-enable xdebug
+        zip \
+        unzip \
+        wget ;
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN add-apt-repository ppa:ondrej/php -y
 
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN apt-get install -y --no-install-recommends \
+        php${PHP_VERSION} \
+        php${PHP_VERSION}-cli \
+        php${PHP_VERSION}-fpm \
+        php${PHP_VERSION}-bz2 \
+        php${PHP_VERSION}-curl \
+        php${PHP_VERSION}-mbstring \
+        php${PHP_VERSION}-intl \
+        php${PHP_VERSION}-sqlite \
+        php${PHP_VERSION}-mysql \
+        php${PHP_VERSION}-xml \
+        php${PHP_VERSION}-bcmath ;
 
-# Clear workit
-RUN rm -rf /var/www/html/*
+# composer install
+RUN curl -sS https://getcomposer.org/installer | \
+    php -- --install-dir=/usr/local/bin --2.2 --filename=composer
 
-# Set workdir
-WORKDIR /var/www/html
+# configure ngix file
+RUN echo "server { \
+    listen 80 default_server; \
+    server_name _ ; \
+    root /var/www/public; \
+    index index.php; \
+    \
+    charset utf-8; \
+    \
+    location / { \
+        try_files \$uri \$uri/ /index.php?\$query_string; \
+    } \
+    \
+    error_page 404 /index.php; \
+    \
+    access_log /var/log/nginx/access.log; \
+    error_log /var/log/nginx/error.log warn; \
+    \
+    location ~ \.php\$ { \
+        fastcgi_pass unix:/var/run/php/php${PHP_VERSION}-fpm.sock; \
+        fastcgi_index index.php; \
+        fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name; \
+        include fastcgi_params; \
+    } \
+    \
+    location ~ /\.(?!well-known).* { \
+        deny all; \
+    } \
+}" > /etc/nginx/sites-available/default ;
 
-# Copy local files to workdir
-COPY . .
+# clear temp files
+RUN apt-get -y clean && \
+    rm -rf /var/lib/apt/lists/* /var/tmp/*
 
-# Install composer
-# RUN composer install --no-dev --no-interaction
+# Install composer packages
+# RUN composer install --no-scripts --no-plugins --no-interaction --no-dev
 
-# Expode public port
-EXPOSE 9000
+EXPOSE 80
 
-CMD ["php-fpm"]
+RUN echo "#!/bin/bash\n\
+service php${PHP_VERSION}-fpm start\n\
+nginx -g \"daemon off;\"" > /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
