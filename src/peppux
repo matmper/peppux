@@ -1,7 +1,7 @@
 <?php
 
 try {
-    require_once __DIR__ . '/system/bootstrap/Index.php';
+    require_once __DIR__ . '/system/bootstrap/Builder.php';
 
     if (empty($argv[1])) {
         throw new \Exception('Peppux command can`t be empty');

@@ -4,7 +4,7 @@ namespace System\Libraries;
 
 use System\Enums\QueryCondition;
 
-class QueryBuilder
+class QueryBuilder extends Database
 {
     /**
      * Query builder
@@ -13,17 +13,9 @@ class QueryBuilder
      */
     private array $builder;
 
-    /**
-     * Database connection
-     *
-     * @var Database
-     */
-    private Database $connection;
-
     public function __construct()
     {
-        $this->connection = new Database;
-        $this->reset();
+        parent::__construct();
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,10 +32,7 @@ class QueryBuilder
     public function get(): array
     {
         $this->build();
-        $execute = $this->connection->all($this->builder['raw'], $this->builder['bind']);
-        $this->reset();
-
-        return $execute;
+        return $this->all($this->builder['raw'], $this->builder['bind']);
     }
 
     /**
@@ -54,13 +43,10 @@ class QueryBuilder
     public function first(): ?object
     {
         $this->build();
-        $execute = $this->connection->row($this->builder['raw'], $this->builder['bind']);
-        $this->reset();
-
-        return $execute;
+        return $this->row($this->builder['raw'], $this->builder['bind']);
     }
 
-        /**
+    /**
      * Set a query raw
      *
      * @param string $queryRaw
@@ -69,7 +55,7 @@ class QueryBuilder
      */
     public function raw(string $queryRaw, array $bind = []): array
     {
-        return $this->connection->all($queryRaw, $bind);
+        return $this->all($queryRaw, $bind);
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -266,6 +252,7 @@ class QueryBuilder
     private function build(): void
     {
         try {
+            $this->reset();
             $this->buildColumns();
             $this->buildTable();
             $this->buildWhere();

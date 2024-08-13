@@ -19,8 +19,8 @@
 Access: [Peppux - Complete Documentation](https://matmper.github.io/peppux)
 
 ## Requeriments
-- Docker && Docker Compose
-- GNU make
+- [Podman](https://podman.io/)
+- [GNU make](https://www.gnu.org/software/make/)
 
 ## Installation for development
 

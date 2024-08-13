@@ -6,11 +6,6 @@ use PDO;
 
 class Database extends PDO
 {
-    /**
-     * @var integer
-     */
-    public int $transactionCounter = 0;
-
     public function __construct()
     {
         $this->connect();
@@ -21,39 +16,23 @@ class Database extends PDO
      */
     public function beginTransaction(): bool
     {
-        // if (empty($this->transactionCounter++)) {
-        //     return parent::beginTransaction();
-        // }
-
-        return true;
+        return parent::beginTransaction();
     }
 
-    // /**
-    //  * @inheritDoc
-    //  */
+    /**
+     * @inheritDoc
+     */
     public function commit(): bool
     {
-        // $this->transactionCounter = $this->transactionCounter - 1;
-
-        // if (empty($this->transactionCounter)) {
-        //     return parent::commit();
-        // }
-
-        return false;
+        return parent::commit();
     }
 
-    // /**
-    //  * @inheritDoc
-    //  */
+    /**
+     * @inheritDoc
+     */
     public function rollBack(): bool
     {
-        // $this->transactionCounter = $this->transactionCounter - 1;
-
-        // if (empty($this->transactionCounter)) {
-        //     return parent::rollback();
-        // }
-
-        return false;
+        return parent::rollBack();
     }
 
     /**

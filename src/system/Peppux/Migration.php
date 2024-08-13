@@ -13,16 +13,13 @@ class Migration implements MigrationInterface
     private string $table = 'migrations';
 
     /**
-     * Database connection
-     *
      * @var Database
      */
     private Database $database;
 
     public function __construct()
     {
-        $this->database = new Database();
-        $this->createIfNotExistsMigrationTable();
+        $this->database = new Database;
     }
 
     /**
@@ -30,7 +27,8 @@ class Migration implements MigrationInterface
      */
     public function up(): void
     {
-        $this->database->beginTransaction();
+        $this->createIfNotExistsMigrationTable();
+        // $this->database->beginTransaction();
 
         try {
             $files = $this->getMigrationFiles();
@@ -53,9 +51,9 @@ class Migration implements MigrationInterface
                 }
             }
 
-            $this->database->commit();
+            // $this->database->commit();
         } catch (\Throwable $th) {
-            $this->database->rollback();
+            // $this->database->rollback();
             throw $th;
         }
     }
@@ -67,7 +65,8 @@ class Migration implements MigrationInterface
      */
     public function down(int $steps = 1): void
     {
-        $this->database->beginTransaction();
+        $this->createIfNotExistsMigrationTable();
+        // $this->database->beginTransaction();
 
         try {
             $down = $this->getMigrations($steps);
@@ -85,9 +84,9 @@ class Migration implements MigrationInterface
                 }
             }
 
-            $this->database->commit();
+            // $this->database->commit();
         } catch (\Throwable $th) {
-            $this->database->rollback();
+            // $this->database->rollback();
             throw $th;
         }
     }
@@ -144,8 +143,6 @@ class Migration implements MigrationInterface
      */
     private function createIfNotExistsMigrationTable(): void
     {
-        $this->database->beginTransaction();
-
         try {
             $this->database->execute("CREATE TABLE IF NOT EXISTS `{$this->table}` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -154,10 +151,7 @@ class Migration implements MigrationInterface
                 PRIMARY KEY `pk_id` (`id`),
                 UNIQUE KEY `uq_name` (`name`)
             )");
-
-            $this->database->commit();
         } catch (\Throwable $th) {
-            $this->database->rollBack();
             throw $th;
         }
     }
