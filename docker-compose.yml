@@ -1,7 +1,9 @@
 services:
 
   webapp:
-    container_name: "${DOCKER_CONTAINER_NAME:-api}-php"
+    container_name: "peppux-php"
+    environment:
+      - ENV=local
     build:
       context: .
       dockerfile: ./docker/Dockerfile
@@ -13,20 +15,20 @@ services:
       - network
 
   mysql:
-    image: mysql/mysql-server:8.0.23
-    container_name: "${DOCKER_CONTAINER_NAME:-api}-mysql"
-    command:
-      - --explicit_defaults_for_timestamp
-      - --default-authentication-plugin=mysql_native_password
+    image: mysql:8.4.4
+    container_name: "peppux-mysql"
+    restart: on-failure
     ports:
       - "${DB_PORT:-3306}:${DB_PORT:-3306}"
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
       MYSQL_ROOT_HOST: '%'
     volumes:
-      - volume_db:/var/lib/mysql
-      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+      - database_volume:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     networks:
       - network
 
@@ -34,10 +36,10 @@ services:
 networks:
   network:
     driver: bridge
-    name: "${DOCKER_CONTAINER_NAME:-api}-network"
+    name: "peppux-network"
 
 #Volumes
 volumes:
-  volume_db:
-    name: "${DOCKER_CONTAINER_NAME:-api}-mysql"
+  database_volume:
+    name: "peppux-mysql"
     driver: local

@@ -1,0 +1,37 @@
+server {
+    listen 80 default_server;
+    server_name _;
+    root /var/www/public;
+    index index.php;
+
+    # Tamanho máximo do corpo da requisição
+    client_max_body_size 5M;
+
+    # Charset
+    charset utf-8;
+
+    # Regras para o diretório raiz
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # Página de erro 404
+    error_page 404 /index.php;
+
+    # Logs
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log warn;
+
+    # Configuração para PHP
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    # Bloqueio de acesso a arquivos ocultos, exceto well-known
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}

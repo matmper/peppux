@@ -52,7 +52,7 @@ class Request implements ArrayableInterface
      * @param string|null $method
      * @return mixed
      */
-    public static function get(string|int $param, string $method = null): mixed
+    public static function get(string|int $param, string|null $method = null): mixed
     {
         if ($method) {
             return self::getByMethod($param, $method);
@@ -124,11 +124,11 @@ class Request implements ArrayableInterface
     private function setRequestData(): void
     {
         foreach ($_GET as $key => $value) {
-            $this->{$key} = $this->requestGet[$key] = $value;
+            $this->{$key} = self::$requestGet[$key] = $value;
         }
 
         foreach ($_POST as $key => $value) {
-            $this->{$key} = $this->requestPost[$key] = $value;
+            $this->{$key} = self::$requestPost[$key] = $value;
         }
     }
 }

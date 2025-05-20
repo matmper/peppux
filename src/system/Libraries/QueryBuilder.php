@@ -180,7 +180,7 @@ class QueryBuilder extends Database
      * @param integer|null $offset
      * @return self
      */
-    public function limit(int $limit, int $offset = null): self
+    public function limit(int $limit, ?int $offset = null): self
     {
         $this->builder['limit'] = $limit;
 

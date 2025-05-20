@@ -1,13 +1,19 @@
-include .env
+CONTAINER=peppux-php
 
-CONTAINER=$(DOCKER_CONTAINER_NAME)-php
+ifeq ($(OS),Windows_NT)
+	CMD_TIMEOUT=timeout
+	CMD_GITHUB_HOOKS=echo "Skipping chmod on Windows"
+else
+	CMD_TIMEOUT=sleep
+	CMD_GITHUB_HOOKS=chmod +x .github/hooks/*
+endif
+
+build-first: build up
+	make composer
+	make migrate
 
 build: git-prepare kill
 	docker-compose build --no-cache
-	docker-compose up --no-build -d
-	docker exec -it $(CONTAINER) rm -rf ./vendor/ && rm -f ./composer.lock
-	make composer-install
-	make migrate
 
 up:
 	docker-compose up --no-build -d
@@ -25,20 +31,25 @@ tty:
 # Composer
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-composer-install:
-	docker exec -it $(CONTAINER) composer install --no-scripts --no-plugins --no-interaction --dev
+composer:
+	docker exec $(CONTAINER) composer install --no-scripts --no-plugins --no-interaction --dev
+	docker cp $(CONTAINER):/var/www/composer.lock ./src/composer.lock
+	docker cp $(CONTAINER):/var/www/vendor ./src/vendor
 
 composer-update:
 	docker exec -it $(CONTAINER) composer update
 
 composer-check:
-	docker exec -it $(CONTAINER) composer check
-
-composer-tests:
-	docker exec -it $(CONTAINER) composer tests
+	docker exec $(CONTAINER) composer check
 
 composer-phpcbf:
-	docker exec -it $(CONTAINER) composer phpcbf
+	docker exec $(CONTAINER) composer phpcbf
+
+composer-tests:
+	docker exec $(CONTAINER) composer tests
+
+composer-tests-filter:
+	docker exec $(CONTAINER) php vendor/bin/phpunit --configuration phpunit.xml --filter=$(filter)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Commands
@@ -56,4 +67,4 @@ migrate-rollback:
 
 git-prepare:
 	git config --local core.hooksPath .github/hooks
-	chmod +x .github/hooks/*
+	$(CMD_GITHUB_HOOKS)

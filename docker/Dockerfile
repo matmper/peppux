@@ -1,93 +1,66 @@
-FROM ubuntu:20.04
+FROM debian:bookworm-slim
 
-ARG PHP_VERSION=8.3
+ARG PHP_VERSION=8.4
 
-ENV TZ=UTC
-ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/Sao_Paulo \
+    DEBIAN_FRONTEND=noninteractive \
+    ENV=production \
+    COMPOSER_ALLOW_SUPERUSER=1
 
-RUN rm -rf /var/www/*
+# Adiciona repositório SURY para PHP 8.4
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    apt-transport-https \
+    lsb-release \
+    curl && \
+    echo "deb https://packages.sury.org/php/ $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/sury-php.list && \
+    curl -fsSL https://packages.sury.org/php/apt.gpg | tee /etc/apt/trusted.gpg.d/sury-php.gpg > /dev/null && \
+    apt-get update
 
-COPY ./src/ /var/www
+# Instala PHP e extensões necessárias
+RUN apt-get install -y --no-install-recommends \
+    nginx \
+    unzip \
+    git \
+    zip \
+    php${PHP_VERSION}-fpm \
+    php${PHP_VERSION}-cli \
+    php${PHP_VERSION}-curl \
+    php${PHP_VERSION}-mbstring \
+    php${PHP_VERSION}-intl \
+    php${PHP_VERSION}-sqlite \
+    php${PHP_VERSION}-mysql \
+    php${PHP_VERSION}-xml \
+    php${PHP_VERSION}-gd \
+    php${PHP_VERSION}-bcmath \
+    php${PHP_VERSION}-memcached \
+    php${PHP_VERSION}-zip && \
+    rm -rf /var/lib/apt/lists/* /var/tmp/*
 
+# Define o diretório correto para a aplicação
 WORKDIR /var/www
 
-# Install dependencies
-RUN apt-get upgrade && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-        build-essential \
-        ca-certificates \
-        software-properties-common \
-        lsb-release \
-        nginx \
-        curl \
-        vim \
-        zip \
-        unzip \
-        wget ;
-
-RUN add-apt-repository ppa:ondrej/php -y
-
-RUN apt-get install -y --no-install-recommends \
-        php${PHP_VERSION} \
-        php${PHP_VERSION}-cli \
-        php${PHP_VERSION}-fpm \
-        php${PHP_VERSION}-bz2 \
-        php${PHP_VERSION}-curl \
-        php${PHP_VERSION}-mbstring \
-        php${PHP_VERSION}-intl \
-        php${PHP_VERSION}-sqlite \
-        php${PHP_VERSION}-mysql \
-        php${PHP_VERSION}-xml \
-        php${PHP_VERSION}-bcmath ;
+COPY ./src/ /var/www
+COPY ./docker /docker
 
 # composer install
-RUN curl -sS https://getcomposer.org/installer | \
-    php -- --install-dir=/usr/local/bin --2.2 --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --2.7 --filename=composer
 
-# configure ngix file
-RUN echo "server { \
-    listen 80 default_server; \
-    server_name _ ; \
-    root /var/www/public; \
-    index index.php; \
-    \
-    charset utf-8; \
-    \
-    location / { \
-        try_files \$uri \$uri/ /index.php?\$query_string; \
-    } \
-    \
-    error_page 404 /index.php; \
-    \
-    access_log /var/log/nginx/access.log; \
-    error_log /var/log/nginx/error.log warn; \
-    \
-    location ~ \.php\$ { \
-        fastcgi_pass unix:/var/run/php/php${PHP_VERSION}-fpm.sock; \
-        fastcgi_index index.php; \
-        fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name; \
-        include fastcgi_params; \
-    } \
-    \
-    location ~ /\.(?!well-known).* { \
-        deny all; \
-    } \
-}" > /etc/nginx/sites-available/default ;
+# Altera para usuário www-data e instala composer
+RUN composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --optimize-autoloader
 
-# clear temp files
+# Remove pacotes temporários
 RUN apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* /var/tmp/*
 
-# Install composer packages
-# RUN composer install --no-scripts --no-plugins --no-interaction --no-dev
-
+# Porta do container
 EXPOSE 80
+EXPOSE 443
 
-RUN echo "#!/bin/bash\n\
-service php${PHP_VERSION}-fpm start\n\
-nginx -g \"daemon off;\"" > /entrypoint.sh
-
+# Entrypoint script
+COPY ./docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["nginx", "-g", "daemon off;"]

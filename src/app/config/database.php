@@ -22,7 +22,7 @@ return [
             'user' => env('DB_USER', 'root'),
             'pass' => env('DB_PASS', ''),
             'options' => extension_loaded('pdo_mysql')
-                ? array_filter([])
+                ? [] // array_filter([])
                 : [],
         ],
 

@@ -8,7 +8,7 @@ class Database extends PDO
 {
     public function __construct()
     {
-        $this->connect();
+        $this->establishConnection();
     }
 
     /**
@@ -98,7 +98,7 @@ class Database extends PDO
      *
      * @return void
      */
-    private function connect(): void
+    private function establishConnection(): void
     {
         $connectionName = config('database.default');
         $config = config("database.connections.{$connectionName}");

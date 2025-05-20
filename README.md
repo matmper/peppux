@@ -10,7 +10,7 @@
         <img src="https://github.com/matmper/peppux/actions/workflows/github_actions.yml/badge.svg?event=push" alt="Actions">
     </a>
     <a href="https://github.com/matmper/peppux/blob/main/LICENSE">
-        <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License MIT">
+        <img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License Apache">
     </a>
 </p>
 
@@ -19,25 +19,23 @@
 Access: [Peppux - Complete Documentation](https://matmper.github.io/peppux)
 
 ## Requeriments
-- [Podman](https://podman.io/)
+- [Docker](https://www.docker.com/)
 - [GNU make](https://www.gnu.org/software/make/)
 
 ## Installation for development
 
 Clone repository, copy env and configure it:
 ```bash
-$ cp ./src/.env.example ./src/env
-$ ln -s ./src/.env .env
+$ cp ./src/.env.example ./src/.env
 ```
 
 Start docker and run these commands:
 ```bash
-$ make build
-$ make up
+$ make build-first
 ```
 
 Use `$ make up` to start or `$ make down` to stop
 
 ---
 
-This repository use [MIT License](https://choosealicense.com/licenses/mit/)
+This repository use [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0)
